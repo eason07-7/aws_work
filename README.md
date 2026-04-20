@@ -72,9 +72,7 @@ aws_module_guides/
 
 ## 聲明
 
-- 所有指令與步驟已在 AWS Learner Lab 驗證（學號 112021014 & 112021134）
 - **成功紀錄**：Module 4 完成 45/45 滿分
-- 學號與個人憑證已從本倉庫排除（見 `.gitignore`）
 - 此倉庫屬於 [AWS Homework Workspace](https://github.com/eason07-7/aws_autowork) 的獨立模組指南子倉庫
 
 ---
