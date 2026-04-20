@@ -12,8 +12,8 @@
 	<a href="https://line.me/ti/p/mJUnfzW_Pr" target="_blank" rel="noopener noreferrer">點我直接加 LINE 好友</a>
 </p>
 
-# AWS Learner Lab Module Guides
-
+# AWS Academy Data Engineering [154382] Module Guides
+EE300016 [A] 大數據資料處理(大三)
 清晰的逐步執行指南，用於 AWS Learner Lab 作業。每個 module 包含成功路徑、陷阱提示與驗收清單。
 
 ## 快速開始
