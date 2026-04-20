@@ -1,3 +1,17 @@
+## LINE 聯絡
+
+有興趣進一步交流，歡迎掃描下方 QR Code 加我 LINE：
+
+<p align="left">
+	<a href="https://line.me/ti/p/mJUnfzW_Pr" target="_blank" rel="noopener noreferrer">
+		<img src="assets/line-qr.jpg" alt="LINE QR Code" width="220" />
+	</a>
+</p>
+
+<p>
+	<a href="https://line.me/ti/p/mJUnfzW_Pr" target="_blank" rel="noopener noreferrer">點我直接加 LINE 好友</a>
+</p>
+
 # AWS Learner Lab Module Guides
 
 清晰的逐步執行指南，用於 AWS Learner Lab 作業。每個 module 包含成功路徑、陷阱提示與驗收清單。
