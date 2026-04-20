@@ -1,6 +1,6 @@
 # AWS Learner Lab Module Guides
 
-清晰的逐步執行指南，用於 AWS Learner Lab 作業的複刻和重現。每個 module 包含成功路徑、陷阱提示與驗收清單。
+清晰的逐步執行指南，用於 AWS Learner Lab 作業。每個 module 包含成功路徑、陷阱提示與驗收清單。
 
 ## 快速開始
 
@@ -8,7 +8,7 @@
 
 | 檔案 | 用途 |
 |---|---|
-| `SUCCESS.md` | ⭐ **開始這裡** — 學號無關的完整執行手冊（45/45 滿分） |
+| `SUCCESS.md` | ⭐ **開始這裡** — 完整執行手冊（45/45 滿分） |
 | `module*.md` | 原始作業需求（來自 AWS Training） |
 | `*.cf.yml` | CloudFormation 模板 |
 | `experiment/` | 首刷流水帳與 workflow 狀態（僅供參考） |
@@ -17,9 +17,7 @@
 
 ### [Module 4 — Querying Data by Using Athena](module4/)
 
-**成功率** 45/45（完美）  
-**模型推薦** Haiku 4.5（複刻）、Sonnet 4.6（首刷）  
-**耗時** ~90 分鐘  
+**分數** 45/45（完美）   
 **重點技能**：
 - Athena 查詢 S3 CSV
 - AWS Glue database + table schema
@@ -55,16 +53,6 @@
 
 ---
 
-## 推薦模型
-
-| 情況 | 模型 | 理由 |
-|---|---|---|
-| 複刻 SUCCESS.md（已有完整指令） | **Haiku 4.5** | 無需推理，逐字執行 + 替換 placeholder |
-| 首刷新 module（探索階段） | **Sonnet 4.6** | 理解需求、組合 CLI、除錯 |
-| IAM/Lab 邊界 debug | **Opus 4.7** | 深度策略分析 |
-| 本地部署 | **30B+ instruct** 如 Qwen2.5-32B-Coder | 穩定 tool-calling；7B-13B 不建議 |
-
----
 
 ## 專案結構
 
