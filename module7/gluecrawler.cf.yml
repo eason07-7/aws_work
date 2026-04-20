@@ -1,0 +1,34 @@
+AWSTemplateFormatVersion: '2010-09-09'
+Parameters:
+ CFNCrawlerName:
+   Type: String
+   Default: cfn-crawler-weather
+ CFNDatabaseName:
+   Type: String
+   Default: cfn-database-weather
+ CFNTablePrefixName:
+   Type: String
+   Default: cfn_sample_1-weather
+Resources:
+ CFNDatabaseWeather:
+   Type: AWS::Glue::Database
+   Properties:
+     CatalogId: !Ref AWS::AccountId
+     DatabaseInput:
+       Name: !Ref CFNDatabaseName
+       Description: "AWS Glue container to hold metadata tables for the weather crawler"
+ CFNCrawlerWeather:
+   Type: AWS::Glue::Crawler
+   Properties:
+     Name: !Ref CFNCrawlerName
+     Role: arn:aws:iam::975050315028:role/gluelab
+     Description: AWS Glue crawler to crawl weather data
+     DatabaseName: !Ref CFNDatabaseName
+     Targets:
+       S3Targets:
+         - Path: "s3://noaa-ghcn-pds/csv/by_year/"
+     TablePrefix: !Ref CFNTablePrefixName
+     SchemaChangePolicy:
+       UpdateBehavior: "UPDATE_IN_DATABASE"
+       DeleteBehavior: "LOG"
+     Configuration: "{\"Version\":1.0,\"CrawlerOutput\":{\"Partitions\":{\"AddOrUpdateBehavior\":\"InheritFromTable\"},\"Tables\":{\"AddOrUpdateBehavior\":\"MergeNewColumns\"}}}"

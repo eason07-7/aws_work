@@ -34,6 +34,26 @@
 
 ---
 
+### [Module 7 — Glue ETL + Athena View + CloudFormation Crawler + IAM](module7/)
+
+**分數** 55/60（Task 2c 的 5 分有結構性陷阱，見下）   
+**重點技能**：
+- Glue Crawler 爬 NOAA GHCN 公開資料集（`s3://noaa-ghcn-pds/csv/by_year/`）
+- Glue `update_table` 重新命名欄位
+- Athena CTAS 建 Parquet 外部表（`late20th`）
+- Athena `CREATE VIEW` + `Preview View` UI 操作
+- CloudFormation 部署 Glue Crawler + Database
+- Mary IAM 使用者跨身份 `start_crawler` 測試
+
+**🚨 關鍵陷阱（必讀 SUCCESS.md §3 + §5）**：
+- Task 2c/2d 的 grader **對 user-agent 敏感** — boto3 路徑被判 0 分，必須由使用者在 Athena Console Query Editor 手動操作
+- Task 2c 的 5 分結構性卡死：必須**第一次就在 Console 用 `CREATE VIEW tmax`**（不能 OR REPLACE，也不能先用 boto3），因為 `glue:DeleteTable` 被 IAM explicit deny，一旦錯了無法 DROP 重建
+- 最現實的滿分是 55/60；要拚 60/60 需要全新 Lab session + 第一次就 Console-native
+
+[👉 Module 7 完整指南](module7/SUCCESS.md)
+
+---
+
 ## 使用方式
 
 ### 方式 A：按照 SUCCESS.md 逐步執行（推薦複刻）
@@ -64,17 +84,22 @@ aws_module_guides/
 │   ├── module4.md              # 原始作業需求
 │   ├── athenaquery.cf.yml       # CloudFormation template
 │   └── experiment/             # 首刷紀錄（JOURNAL + CHECKPOINT）
-│       ├── JOURNAL.md
-│       └── ...
+│       └── JOURNAL.md
+├── module7/
+│   ├── SUCCESS.md              # ⭐ 開始這裡（學號無關，含 Console 手動步驟）
+│   ├── module7.md              # 原始作業需求
+│   ├── gluecrawler.cf.yml      # CloudFormation template
+│   └── experiment/
+│       └── JOURNAL.md          # 首刷流水帳 + user-agent 陷阱診斷
 ```
 
 ---
 
 ## 聲明
 
-- **成功紀錄**：Module 4 完成 45/45 滿分
+- **成功紀錄**：Module 4 完成 45/45 滿分；Module 7 完成 55/60（Task 2c 的 5 分為 grader 結構性陷阱，見 module7/SUCCESS.md §5）
 - 此倉庫屬於 [AWS Homework Workspace](https://github.com/eason07-7/aws_autowork) 的獨立模組指南子倉庫
 
 ---
 
-**最後更新**：2026-04-20（Module 4 满分完成）
+**最後更新**：2026-04-21（Module 7 新增，55/60 + user-agent 陷阱記錄）
