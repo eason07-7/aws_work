@@ -1,3 +1,19 @@
+## AWS Academy Data Engineering [154382] 
+EE300016 [A] 大數據資料處理(大三)
+## LINE 聯絡
+
+有興趣進一步交流，歡迎掃描下方 QR Code 加我 LINE：
+
+<p align="left">
+	<a href="https://line.me/ti/p/mJUnfzW_Pr" target="_blank" rel="noopener noreferrer">
+		<img src="assets/line-qr.jpg" alt="LINE QR Code" width="220" />
+	</a>
+</p>
+
+<p>
+	<a href="https://line.me/ti/p/mJUnfzW_Pr" target="_blank" rel="noopener noreferrer">點我直接加 LINE 好友</a>
+</p>
+
 # AWS Learner Lab Module Guides
 
 清晰的逐步執行指南，用於 AWS Learner Lab 作業。每個 module 包含成功路徑、陷阱提示與驗收清單。
@@ -17,7 +33,7 @@
 
 ### [Module 4 — Querying Data by Using Athena](module4/)
 
-**分數** 45/45（完美）   
+**分數** 45/45  
 **重點技能**：
 - Athena 查詢 S3 CSV
 - AWS Glue database + table schema
@@ -59,10 +75,9 @@
 ### 方式 A：按照 SUCCESS.md 逐步執行（推薦複刻）
 
 1. 讀 `module4/SUCCESS.md` 的 Prerequisites
-2. 準備 `.env`（AWS credentials）
-3. 在 Prerequisites 中找到 Placeholders（`{{STUDENT_ID}}`、`{{BUCKET}}`）
-4. 按 Step 3.1–3.9 逐步執行
-5. Wait 5 min → Submit → 應得 45/45
+2. 在 Prerequisites 中找到 Placeholders（`{{STUDENT_ID}}`、`{{BUCKET}}`）
+3. 按 Step 3.1–3.9 逐步執行
+4. Wait 5 min → Submit → 應得 45/45
 
 ### 方式 B：參考 JOURNAL.md（首刷學習）
 
@@ -74,7 +89,7 @@
 ---
 
 
-## 專案結構
+## 結構
 
 ```
 aws_module_guides/
@@ -98,7 +113,7 @@ aws_module_guides/
 ## 聲明
 
 - **成功紀錄**：Module 4 完成 45/45 滿分；Module 7 完成 55/60（Task 2c 的 5 分為 grader 結構性陷阱，見 module7/SUCCESS.md §5）
-- 此倉庫屬於 [AWS Homework Workspace](https://github.com/eason07-7/aws_autowork) 的獨立模組指南子倉庫
+- 此倉庫屬於 [AWS Homework Workspace](https://github.com/eason07-7/aws_autowork)自動腳本跑雲上實作的獨立模組指南子倉庫
 
 ---
 
