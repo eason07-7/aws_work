@@ -1,0 +1,14 @@
+# reference_code 元資料
+# 每加一支參考檔就在此追加一筆
+# 格式見本資料夾 README.md
+
+# 範例（請刪除或改成真的參考檔）：
+# - file: teacher_cleaning.py
+#   source: "資料科學課期中課堂範例"
+#   author: "某某老師"
+#   date: 2026-03-15
+#   purpose: "CSV 讀檔 + 基礎欄位清洗的概念示範"
+#   usage: "概念參考，不直接 copy"
+#   modifiable: false
+
+references: []
