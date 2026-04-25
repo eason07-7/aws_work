@@ -50,6 +50,26 @@ EE300016 [A] 大數據資料處理(大三)
 
 ---
 
+### [Module 8 — Storing and Analyzing Data by Using Amazon Redshift](module8/)
+
+**分數** 滿分  
+**重點技能**：
+- Redshift Cluster 建立（ra3.large x2）+ Security Group（port 5439）
+- Redshift Data API 建表（users, date, sales）
+- COPY 指令從 S3 載入資料（tab/pipe 分隔，跨帳號 us-west-2）
+- SQL 查詢：sum/join/group by/order by/limit
+- Redshift Data API 程式化查詢（模擬 AWS CLI）
+- Mary IAM 使用者跨身份 `execute_statement` + `get_statement_result` 測試
+
+**關鍵陷阱**：
+- COPY 指令的 S3 source 在 `us-west-2`，必須明確指定 `region 'us-west-2'`
+- Cluster 建立約需 5-8 分鐘，需輪詢等待 `ClusterStatus=available`
+- `MyRedshiftRole` ARN 每個帳號不同，執行前要動態取得
+
+[👉 Module 8 完整指南](module8/SUCCESS.md)
+
+---
+
 ### [Module 7 — Glue ETL + Athena View + CloudFormation Crawler + IAM](module7/)
 
 **分數** 55/60（Task 2c 的 5 分有結構性陷阱，見下）   
@@ -106,15 +126,20 @@ aws_module_guides/
 │   ├── gluecrawler.cf.yml      # CloudFormation template
 │   └── experiment/
 │       └── JOURNAL.md          # 首刷流水帳 + user-agent 陷阱診斷
+├── module8/
+│   ├── SUCCESS.md              # ⭐ 開始這裡（全自動化，滿分）
+│   ├── module8.md              # 原始作業需求
+│   └── experiment/
+│       └── JOURNAL.md
 ```
 
 ---
 
 ## 聲明
 
-- **成功紀錄**：Module 4 完成 45/45 滿分；Module 7 完成 55/60（Task 2c 的 5 分為 grader 結構性陷阱，見 module7/SUCCESS.md §5）
+- **成功紀錄**：Module 4 完成 45/45 滿分；Module 7 完成 55/60（Task 2c 的 5 分為 grader 結構性陷阱，見 module7/SUCCESS.md §5）；Module 8 完成滿分（全自動化）
 - 此倉庫屬於 [AWS Homework Workspace](https://github.com/eason07-7/aws_autowork)自動腳本跑雲上實作的獨立模組指南子倉庫
 
 ---
 
-**最後更新**：2026-04-21（Module 7 新增，55/60 + user-agent 陷阱記錄）
+**最後更新**：2026-04-26（Module 8 新增，滿分，全自動化）
