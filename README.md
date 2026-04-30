@@ -70,6 +70,25 @@ EE300016 [A] 大數據資料處理(大三)
 
 ---
 
+### [Module 9 — Updating Dynamic Data in Place (Hudi + Glue + Kinesis)](module9/)
+
+**分數** 30/30 滿分  
+**重點技能**：
+- AWS Glue Streaming Job（native Apache Hudi `--datalake-formats hudi`）
+- Apache Hudi COPY_ON_WRITE upsert + schema evolution（`new_column` 自動擴展）
+- Amazon Kinesis Data Streams 資料攝取
+- Cognito Identity Pool federated credentials（SRP 認證 → 取 Kinesis 寫入權限）
+- Athena 查詢 Hudi table（schema 自動跟隨）
+
+**關鍵陷阱**：
+- Task 4（KDG）grader 用 CloudTrail 檢查**瀏覽器**發出的 Cognito API 呼叫，boto3 PutRecord 不計分——必須真實瀏覽器登入 KDG，點 Send Data（🖐 唯一手動步驟）
+- 原始 `glue_job_script.py` 有 Spark 3.x Bug（`commonConfig` 重複帶 `path`），不修則 Glue job 每次 FAILED，見 SUCCESS.md §3.2
+- Learner Lab IAM 無 `kinesis:PutRecord`，Tasks 6/7 必須走 Cognito Identity Pool
+
+[👉 Module 9 完整指南](module9/SUCCESS.md)
+
+---
+
 ### [Module 7 — Glue ETL + Athena View + CloudFormation Crawler + IAM](module7/)
 
 **分數** 55/60（Task 2c 的 5 分有結構性陷阱，見下）   
@@ -131,15 +150,20 @@ aws_module_guides/
 │   ├── module8.md              # 原始作業需求
 │   └── experiment/
 │       └── JOURNAL.md
+├── module9/
+│   ├── SUCCESS.md              # ⭐ 開始這裡（Task 4 手動 KDG，其餘全自動，30/30）
+│   ├── module9.md              # 原始作業需求
+│   └── experiment/
+│       └── JOURNAL.md
 ```
 
 ---
 
 ## 聲明
 
-- **成功紀錄**：Module 4 完成 45/45 滿分；Module 7 完成 55/60（Task 2c 的 5 分為 grader 結構性陷阱，見 module7/SUCCESS.md §5）；Module 8 完成滿分（全自動化）
+- **成功紀錄**：Module 4 完成 45/45 滿分；Module 7 完成 55/60（Task 2c 的 5 分為 grader 結構性陷阱，見 module7/SUCCESS.md §5）；Module 8 完成滿分（全自動化）；Module 9 完成 30/30 滿分（Task 4 需一次手動 KDG，其餘全自動）
 - 此倉庫屬於 [AWS Homework Workspace](https://github.com/eason07-7/aws_autowork)自動腳本跑雲上實作的獨立模組指南子倉庫
 
 ---
 
-**最後更新**：2026-04-26（Module 8 新增，滿分，全自動化）
+**最後更新**：2026-04-30（Module 9 新增，30/30 滿分）
