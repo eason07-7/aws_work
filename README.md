@@ -50,6 +50,26 @@ EE300016 [A] 大數據資料處理(大三)
 
 ---
 
+### [Module 7 — Glue ETL + Athena View + CloudFormation Crawler + IAM](module7/)
+
+**分數** 55/60（Task 2c 的 5 分有結構性陷阱，見下）   
+**重點技能**：
+- Glue Crawler 爬 NOAA GHCN 公開資料集（`s3://noaa-ghcn-pds/csv/by_year/`）
+- Glue `update_table` 重新命名欄位
+- Athena CTAS 建 Parquet 外部表（`late20th`）
+- Athena `CREATE VIEW` + `Preview View` UI 操作
+- CloudFormation 部署 Glue Crawler + Database
+- Mary IAM 使用者跨身份 `start_crawler` 測試
+
+**🚨 關鍵陷阱（必讀 SUCCESS.md §3 + §5）**：
+- Task 2c/2d 的 grader **對 user-agent 敏感** — boto3 路徑被判 0 分，必須由使用者在 Athena Console Query Editor 手動操作
+- Task 2c 的 5 分結構性卡死：必須**第一次就在 Console 用 `CREATE VIEW tmax`**（不能 OR REPLACE，也不能先用 boto3），因為 `glue:DeleteTable` 被 IAM explicit deny，一旦錯了無法 DROP 重建
+- 最現實的滿分是 55/60；要拚 60/60 需要全新 Lab session + 第一次就 Console-native
+
+[👉 Module 7 完整指南](module7/SUCCESS.md)
+
+---
+
 ### [Module 8 — Storing and Analyzing Data by Using Amazon Redshift](module8/)
 
 **分數** 滿分  
@@ -89,26 +109,6 @@ EE300016 [A] 大數據資料處理(大三)
 
 ---
 
-### [Module 7 — Glue ETL + Athena View + CloudFormation Crawler + IAM](module7/)
-
-**分數** 55/60（Task 2c 的 5 分有結構性陷阱，見下）   
-**重點技能**：
-- Glue Crawler 爬 NOAA GHCN 公開資料集（`s3://noaa-ghcn-pds/csv/by_year/`）
-- Glue `update_table` 重新命名欄位
-- Athena CTAS 建 Parquet 外部表（`late20th`）
-- Athena `CREATE VIEW` + `Preview View` UI 操作
-- CloudFormation 部署 Glue Crawler + Database
-- Mary IAM 使用者跨身份 `start_crawler` 測試
-
-**🚨 關鍵陷阱（必讀 SUCCESS.md §3 + §5）**：
-- Task 2c/2d 的 grader **對 user-agent 敏感** — boto3 路徑被判 0 分，必須由使用者在 Athena Console Query Editor 手動操作
-- Task 2c 的 5 分結構性卡死：必須**第一次就在 Console 用 `CREATE VIEW tmax`**（不能 OR REPLACE，也不能先用 boto3），因為 `glue:DeleteTable` 被 IAM explicit deny，一旦錯了無法 DROP 重建
-- 最現實的滿分是 55/60；要拚 60/60 需要全新 Lab session + 第一次就 Console-native
-
-[👉 Module 7 完整指南](module7/SUCCESS.md)
-
----
-
 ## 使用方式
 
 ### 方式 A：按照 SUCCESS.md 逐步執行（推薦複刻）
@@ -137,14 +137,14 @@ aws_module_guides/
 │   ├── SUCCESS.md              # ⭐ 開始這裡（學號無關）
 │   ├── module4.md              # 原始作業需求
 │   ├── athenaquery.cf.yml       # CloudFormation template
-│   └── experiment/             # 首刷紀錄（JOURNAL + CHECKPOINT）
+│   └── experiment/
 │       └── JOURNAL.md
 ├── module7/
-│   ├── SUCCESS.md              # ⭐ 開始這裡（學號無關，含 Console 手動步驟）
+│   ├── SUCCESS.md              # ⭐ 開始這裡（含 Console 手動步驟，55/60）
 │   ├── module7.md              # 原始作業需求
 │   ├── gluecrawler.cf.yml      # CloudFormation template
 │   └── experiment/
-│       └── JOURNAL.md          # 首刷流水帳 + user-agent 陷阱診斷
+│       └── JOURNAL.md
 ├── module8/
 │   ├── SUCCESS.md              # ⭐ 開始這裡（全自動化，滿分）
 │   ├── module8.md              # 原始作業需求
