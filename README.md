@@ -109,6 +109,25 @@ EE300016 [A] 大數據資料處理(大三)
 
 ---
 
+### [Module 9_1 — Processing Logs by Using Amazon EMR](module9_1/)
+
+**分數** 滿分  
+**重點技能**：
+- Amazon EMR 建立（emr-5.29.0, Hadoop 2.8.5 + Hive 2.3.6, m4.large × 3）
+- Apache Hive 外部表（impressions + clicks）MSCK REPAIR PARTITION
+- Hive MapReduce INSERT：tmp_impressions / tmp_clicks → joined_impressions LEFT OUTER JOIN
+- paramiko SSH 程式化執行 Hive（`hive -f HQL`）
+- Hive 查詢結果輸出 `result.txt`（`hive -e "..." > /home/hadoop/result.txt`）
+
+**關鍵陷阱**：
+- `elasticmapreduce:AddTags` / `AddJobFlowSteps` / `ssm:SendCommand` 均 AccessDenied — 用 `RunJobFlow`（無 Steps）保持 WAITING，再走 paramiko SSH
+- grader 檢查 `sg_configured`（TCP 22 Anywhere-IPv4）和 `pub_ip_set`（master public DNS）— 建 cluster 前先確認 subnet 是 public subnet，並對 master SG 加 SSH 規則
+- `run_job_flow` 不能帶 `Tags` 參數（IAM explicit deny）
+
+[👉 Module 9_1 完整指南](module9_1/SUCCESS.md)
+
+---
+
 ## 使用方式
 
 ### 方式 A：按照 SUCCESS.md 逐步執行（推薦複刻）
@@ -155,15 +174,20 @@ aws_module_guides/
 │   ├── module9.md              # 原始作業需求
 │   └── experiment/
 │       └── JOURNAL.md
+├── module9_1/
+│   ├── SUCCESS.md              # ⭐ 開始這裡（全自動 paramiko SSH，滿分）
+│   ├── module9_1.md            # 原始作業需求
+│   └── experiment/
+│       └── JOURNAL.md
 ```
 
 ---
 
 ## 聲明
 
-- **成功紀錄**：Module 4 完成 45/45 滿分；Module 7 完成 55/60（Task 2c 的 5 分為 grader 結構性陷阱，見 module7/SUCCESS.md §5）；Module 8 完成滿分（全自動化）；Module 9 完成 30/30 滿分（Task 4 需一次手動 KDG，其餘全自動）
+- **成功紀錄**：Module 4 完成 45/45 滿分；Module 7 完成 55/60（Task 2c 的 5 分為 grader 結構性陷阱，見 module7/SUCCESS.md §5）；Module 8 完成滿分（全自動化）；Module 9 完成 30/30 滿分（Task 4 需一次手動 KDG，其餘全自動）；Module 9_1 完成滿分（全自動化 paramiko SSH）
 - 此倉庫屬於 [AWS Homework Workspace](https://github.com/eason07-7/aws_autowork)自動腳本跑雲上實作的獨立模組指南子倉庫
 
 ---
 
-**最後更新**：2026-04-30（Module 9 新增，30/30 滿分）
+**最後更新**：2026-04-30（Module 9_1 新增，滿分）
