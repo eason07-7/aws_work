@@ -109,6 +109,27 @@ EE300016 [A] 大數據資料處理(大三)
 
 ---
 
+### [Module 11 — Kinesis Data Firehose + OpenSearch + Dashboards](module11/)
+
+**分數** 滿分  
+**重點技能**：
+- Kinesis Data Firehose → Lambda enrichment → OpenSearch Service 完整 pipeline
+- Amazon Cognito OAuth 2.0 browser flow 模擬（生成 `CognitoAuthentication` CloudTrail 事件）
+- Cognito Identity Pool federated credentials → SigV4 (`es` service) for OpenSearch REST API
+- OpenSearch Saved Objects API：建 index pattern、pie chart、heat map visualization
+- CloudTrail reverse-engineering：grader "review X" = boto3 describe/get call 觸發 CloudTrail 事件
+
+**關鍵陷阱**：
+- **Task 2（Cognito 登入）**：必須用 OpenSearch Dashboards 自帶的 client ID（`n1l4rlfcqffcnv65diremjdjv`），SRP auth 不夠；要從 `OS_ENDPOINT/_dashboards` 起頭讓 OpenSearch 設 state cookie，再走 Cognito Hosted UI，最後 OpenSearch 自己完成 code exchange
+- **Task 1（EC2 review）**：grader 錯誤訊息寫「Answer the question」，但實際只要 `describe_instances()` + `describe_instance_types()` CloudTrail 事件就通過，不需手動回答 quiz
+- **Firehose buffer**：60s flush interval；生成 traffic 後需 `sleep(90)` 再查 OpenSearch
+- **SigV4 service name**：OpenSearch 仍用 `es`，不是 `opensearch`
+- **osd-xsrf header**：所有 Dashboards write API 需帶 `osd-xsrf: true`
+
+[👉 Module 11 完整指南](module11/SUCCESS.md)
+
+---
+
 ### [Module 9_1 — Processing Logs by Using Amazon EMR](module9_1/)
 
 **分數** 滿分  
@@ -125,6 +146,27 @@ EE300016 [A] 大數據資料處理(大三)
 - `run_job_flow` 不能帶 `Tags` 參數（IAM explicit deny）
 
 [👉 Module 9_1 完整指南](module9_1/SUCCESS.md)
+
+---
+
+### [Module 12 — Building and Orchestrating ETL Pipelines (Step Functions + Athena + Glue)](module12/)
+
+**分數** 滿分  
+**重點技能**：
+- AWS Step Functions state machine 增量建構（boto3 `create_state_machine` + `update_state_machine`）
+- Athena CTAS：CSV → Parquet（Snappy compression）+ 分區（pickup_year / pickup_month）
+- AWS Glue Data Catalog：外部表 + Parquet 表 + Athena View 自動建立
+- Step Functions Map state 迭代 Glue 表名，條件 INSERT INTO 新月份資料
+- 大檔案串流上傳（`requests.get(stream=True)` + `s3.upload_fileobj`）
+
+**關鍵陷阱**：
+- **`End` + `Next` 共存**：`update_state_machine` 若 state 同時有兩個會 `InvalidDefinition`；切換時用 `state.pop('End', None)` 不是 `state['End'] = False`
+- **ExecutionAlreadyExists**：重跑需 catch exception，確認已 SUCCEEDED 再 skip
+- **Parquet CTAS 耗時 5–10 分鐘**：TaskEightTest / TaskTenTest 都要跑 500MB CSV → Parquet
+- **S3 前綴需清空**：重建 Parquet table 前要刪 `optimized-data/` 和 `optimized-data-lookup/` 的所有 objects
+- **8 個 execution 必須按序命名**：TaskTwoTest → TaskThreeTest → TaskFiveTest → TaskSixTest → TaskSevenTest → TaskEightTest → TaskTenTest → TaskTwelveTest（grader 按名稱查）
+
+[👉 Module 12 完整指南](module12/SUCCESS.md)
 
 ---
 
@@ -179,15 +221,21 @@ aws_module_guides/
 │   ├── module9_1.md            # 原始作業需求
 │   └── experiment/
 │       └── JOURNAL.md
+├── module11/
+│   ├── SUCCESS.md              # ⭐ 開始這裡（全自動，Cognito OAuth 模擬，滿分）
+│   └── module11.md             # 原始作業需求
+├── module12/
+│   ├── SUCCESS.md              # ⭐ 開始這裡（全自動，Step Functions 增量建構，滿分）
+│   └── module12.md             # 原始作業需求
 ```
 
 ---
 
 ## 聲明
 
-- **成功紀錄**：Module 4 完成 45/45 滿分；Module 7 完成 55/60（Task 2c 的 5 分為 grader 結構性陷阱，見 module7/SUCCESS.md §5）；Module 8 完成滿分（全自動化）；Module 9 完成 30/30 滿分（Task 4 需一次手動 KDG，其餘全自動）；Module 9_1 完成滿分（全自動化 paramiko SSH）
+- **成功紀錄**：Module 4（45/45）；Module 7（55/60，Task 2c grader 結構性陷阱）；Module 8（滿分，全自動）；Module 9（30/30，Task 4 手動 KDG）；Module 9_1（滿分，全自動 paramiko SSH）；Module 11（滿分，全自動，Cognito browser OAuth 模擬）；Module 12（滿分，全自動，Step Functions 增量建構）
 - 此倉庫屬於 [AWS Homework Workspace](https://github.com/eason07-7/aws_autowork)自動腳本跑雲上實作的獨立模組指南子倉庫
 
 ---
 
-**最後更新**：2026-04-30（Module 9_1 新增，滿分）
+**最後更新**：2026-05-14（Module 11 / 12 新增，均滿分）
