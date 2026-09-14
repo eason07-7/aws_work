@@ -35,8 +35,9 @@
 | 10.1 | Implementing a Messaging System Using Amazon SNS and Amazon SQS（FIFO、DLQ、dedup） | 100/100 | [cloud_developing/lab10.1/SUCCESS.md](cloud_developing/lab10.1/SUCCESS.md) |
 | 11.1 | Orchestrating Serverless Functions with Step Functions（state machine、Parallel、3 Lambda、presigned URL） | 100/100 | [cloud_developing/lab11.1/SUCCESS.md](cloud_developing/lab11.1/SUCCESS.md) |
 | 12.1 | Implementing Application Authentication Using Amazon Cognito（user pool、hosted UI、API authorizer） | 100/100 | [cloud_developing/lab12.1/SUCCESS.md](cloud_developing/lab12.1/SUCCESS.md) |
+| 13.1 | Automating Code Deployments with a CI/CD Pipeline（CodeCommit、CodePipeline → S3） | 100/100 | [cloud_developing/lab13.1/SUCCESS.md](cloud_developing/lab13.1/SUCCESS.md) |
 
-每個 Lab 資料夾另附原始作業說明（`labX.Y.md`）與首刷實驗紀錄（`experiment/JOURNAL.md`）。
+全 13 個 Lab 皆 100/100。每個 Lab 資料夾另附原始作業說明（`labX.Y.md`）與首刷實驗紀錄（`experiment/JOURNAL.md`）。
 
 ---
 
