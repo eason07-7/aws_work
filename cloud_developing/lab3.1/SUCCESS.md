@@ -1,58 +1,124 @@
 # Lab 3.1 — Working with Amazon S3
 
-**分數**：100/100（首刷 2026-09-14，全 boto3 自動化，無 🖐 MANUAL 步驟）
+**分數**：100/100
+**時間**：約 30 分鐘
 
-## 0. Prerequisites
-- Learner Lab started；`<學號>/.env` 有有效 session_token；Region us-east-1
-- 下載並解壓作業 `code.zip` 到腳本旁邊（得到 `code/resources/website/` 與 `code/python_3/`）
-  來源：`https://aws-tc-largeobjects.s3.us-west-2.amazonaws.com/CUR-TF-200-ACCDEV-2-91558/02-lab-s3/code.zip`
-- 執行機器的對外 IPv4 就是要放行的 IP（腳本用 api.ipify.org 自動抓）
+## 這個 Lab 在做什麼
 
-## 1. Placeholders
-| Placeholder | 說明 | 範例 |
-|---|---|---|
-| {{STUDENT_ID}} | 此次執行的學號 | 112021134 |
-| {{INITIALS}} | 姓名縮寫小寫（腳本頂端 `INITIALS`） | el |
-| {{BUCKET}} | `{{INITIALS}}-<YYYY-MM-DD>-s3site`（腳本自動組） | el-2026-09-14-s3site |
-| {{IP}} | 放行的公網 IPv4 | 203.0.113.25 |
+在 VS Code IDE 裡用 AWS CLI 建一個 S3 bucket、設「只有我的 IP 能看」的 bucket policy、把咖啡店網站的 80 個檔案上傳上去，然後用瀏覽器打開驗證。
+grader 檢查的是最終狀態：bucket 存在且名字以 `s3site` 結尾、Block Public Access 設定正確、bucket policy 有 IP 條件、網站檔案在裡面。
 
-## 2. Step-by-step（boto3）
+## 開始前
 
-一鍵：填憑證後 `python lab3_1.py`（腳本會自動下載 code.zip）。
+- 按 **Start Lab** → ready → **AWS** 開 Console
+- 先去 [whatismyip.com](https://www.whatismyip.com/) 記下你電腦的 **IPv4**（後面 policy 要用）
 
-### Step 2.1 — 建 bucket（Task 2：`aws s3api create-bucket --bucket {{BUCKET}} --region us-east-1`）
-**Command:** `s3.create_bucket(Bucket=BUCKET)`（us-east-1 不帶 LocationConstraint）
-**Expected output:** `{'Location': '/el-2026-09-14-s3site'}`
+## Task 1：連上 VS Code IDE、準備檔案
 
-### Step 2.2 — Public access block（Task 2 Console 的「取消 Block all，再勾回三個」）
-**Command:** `put_public_access_block(BlockPublicAcls=True, IgnorePublicAcls=True, BlockPublicPolicy=False, RestrictPublicBuckets=True)`
-**Verify:** `get_public_access_block` 回傳同樣四值
+1. Lab 頁 **Details → AWS: Show**，複製 **LabIDEURL** / **LabIDEPassword**，新分頁開啟並登入
+2. 下方 Bash 終端依序執行：
+   ```bash
+   sudo pip3 install boto3
+   wget https://aws-tc-largeobjects.s3.us-west-2.amazonaws.com/CUR-TF-200-ACCDEV-2-91558/02-lab-s3/code.zip -P /home/ec2-user/environment
+   unzip code.zip
+   aws --version
+   ```
+   解壓後左側會多出 `resources/`（網站檔）和 `python_3/`（`permissions.py`）
 
-### Step 2.3 — Bucket policy（Task 3：website_security_policy.json + permissions.py）
-**Command:** `s3.put_bucket_policy(Bucket, Policy=json)`；policy = Allow `s3:GetObject` on `arn:aws:s3:::{{BUCKET}}/*` 與 bucket ARN，Condition `IpAddress aws:SourceIp [{{IP}}/32]` + `DenyOneObjectIfRequestNotSigned`（report.html，`s3:authtype != REST-QUERY-STRING`）
-**Verify:** `get_bucket_policy` 有 2 statements
+## Task 2：建 bucket
 
-### Step 2.4 — 上傳網站（Task 4：`aws s3 cp ../resources/website s3://{{BUCKET}}/ --recursive --cache-control "max-age=0"`）
-**Command:** 對 `resources/website/**` 每檔 `upload_file(ExtraArgs={'CacheControl':'max-age=0','ContentType':<mimetypes>})`
-**Verify:** 80 檔；`head_object('index.html').CacheControl == 'max-age=0'`
+1. 命名規則：`<你的縮寫小寫>-<今天 YYYY-MM-DD>-s3site`，例如 `sm-2026-09-14-s3site`
+   ```bash
+   aws s3api create-bucket --bucket <bucket-name> --region us-east-1
+   ```
+   回傳 `{"Location": "/<bucket-name>"}`。**把 bucket 名記到記事本。**
+2. Console → **S3** → 點進 bucket → **Permissions** → Block public access 區塊按 **Edit**：
+   - 取消勾選最上面的 **Block all public access**
+   - 再勾回以下三個：
+     - ☑ Block public access to buckets and objects granted through **new** access control lists (ACLs)
+     - ☑ Block public access to buckets and objects granted through **any** access control lists (ACLs)
+     - ☑ Block public and cross-account access to buckets and objects through **any public bucket or access point policies**
+   - 唯一**不勾**的是「Block public access to buckets and objects granted through **new** public bucket or access point policies」（沒留這個，下一步 policy 會被擋）
+   - **Save changes** → 輸入 `confirm`
 
-### Step 2.5 — 測試（Task 5）
-**Command:** 本機無簽名 `GET https://{{BUCKET}}.s3.amazonaws.com/index.html`
-**Expected:** HTTP 200（本機 IP 在白名單）；他處/IDE curl 會 AccessDenied（正確行為）
+## Task 3：套 bucket policy
 
-## 3. 驗收清單
-- [ ] bucket `*-s3site` 存在，PAB 三勾一不勾
-- [ ] bucket policy 2 statements、IP 條件
-- [ ] `index.html` 等 80 檔，Cache-Control max-age=0
-- [ ] 本機瀏覽器開 Object URL 看得到咖啡店網站
-- [ ] Submit → 100/100
+1. IDE 裡 **☰ → File → New File**，命名 `website_security_policy.json`（存在 `/home/ec2-user/environment/`），貼入：
+   ```json
+   {
+       "Version": "2008-10-17",
+       "Statement": [
+           {
+               "Effect": "Allow",
+               "Principal": "*",
+               "Action": "s3:GetObject",
+               "Resource": [
+                   "arn:aws:s3:::<bucket-name>/*",
+                   "arn:aws:s3:::<bucket-name>"
+               ],
+               "Condition": {
+                   "IpAddress": {
+                       "aws:SourceIp": [
+                           "<ip-address>/32"
+                       ]
+                   }
+               }
+           },
+           {
+               "Sid": "DenyOneObjectIfRequestNotSigned",
+               "Effect": "Deny",
+               "Principal": "*",
+               "Action": "s3:GetObject",
+               "Resource": "arn:aws:s3:::<bucket-name>/report.html",
+               "Condition": {
+                   "StringNotEquals": {
+                       "s3:authtype": "REST-QUERY-STRING"
+                   }
+               }
+           }
+       ]
+   }
+   ```
+   把 **三個** `<bucket-name>` 換成你的 bucket 名，`<ip-address>` 換成剛記的 IPv4（保留 `/32`）
+2. 打開 `python_3/permissions.py`，把 `<bucket-name>` 換成你的 bucket 名
+3. 執行：
+   ```bash
+   cd python_3
+   python3 permissions.py
+   ```
+   看到 `DONE`。回 Console 的 Permissions 頁重新整理，Bucket policy 區塊會出現剛才的 JSON
 
-## 4. Known grader traps
-- `BlockPublicPolicy` 必須 False，否則 put_bucket_policy 直接 AccessDenied
-- IP 條件要用執行/瀏覽那台機器的**公網 IPv4**；走 NAT 或 IPv6 會 403（腳本已從 api.ipify.org 抓）
-- 作業說 `<ip>/32` 不能寫 `0.0.0.0`
-- 上傳要自己給 ContentType，否則 boto3 `upload_file` 預設 binary/octet-stream，瀏覽器會下載而不是顯示
-- Task 6 純閱讀 code，不計分
+## Task 4：上傳網站
 
-## 5. Recommended model
-- 複刻：Haiku 4.5（一條指令跑完；只需改 `INITIALS`）
+還在 `python_3` 目錄：
+```bash
+aws s3 cp ../resources/website s3://<bucket-name>/ --recursive --cache-control "max-age=0"
+```
+會刷過 80 行 `upload: ...`
+
+## Task 5：測試
+
+1. Console → S3 → bucket → **Objects** → 點 `index.html` → 複製 **Object URL**（`https://<bucket-name>.s3.amazonaws.com/index.html`）
+2. 用**你自己的電腦**瀏覽器開 → 看到咖啡店網站；點右上 **Login** 會跳 `No API to call`，正常
+3. 從別的網路測應該被擋——在 IDE 終端：
+   ```bash
+   curl https://<bucket-name>.s3.amazonaws.com/index.html
+   ```
+   回 `AccessDenied` 才對（IDE 的 IP 不在白名單）
+
+## Task 6：看程式碼
+
+純閱讀 `resources/website/` 裡的 `index.html`、`scripts/config.js`、`scripts/pastries.js`、`all_products.json`，不計分。
+
+## 交作業
+
+Lab 頁 **Submit → Yes**，看 Grades。
+
+## 會踩的坑
+
+- Block Public Access 那四個勾**只能留一個不勾**（new public bucket policies）；全勾著 `permissions.py` 會 `AccessDenied`
+- IP 必須是你**瀏覽網站那台機器的公網 IPv4**；手機熱點、學校 NAT 換過網路就會 403，重新查 IP 改 policy 再跑一次 `permissions.py` 即可
+- 不能填 `0.0.0.0/0`——S3 會視為公開存取直接擋掉
+- policy 裡三個 `<bucket-name>` 漏改一個就整份套不上（會回 `MalformedPolicy`）
+- `--cache-control "max-age=0"` 別省略，grader 會看 object 的 Cache-Control
+- 上傳前確認自己在 `python_3/` 裡，`../resources/website` 路徑才對

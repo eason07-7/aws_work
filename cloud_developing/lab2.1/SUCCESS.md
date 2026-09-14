@@ -1,46 +1,95 @@
 # Lab 2.1 — Exploring AWS CloudShell and IDE
 
-**分數**：100/100（全 boto3 自動化，無手動步驟）
+**分數**：100/100
+**時間**：約 15 分鐘（作業寫 45 分鐘，大多是探索 UI）
 
-## 0. Prerequisites
-- Learner Lab started；Lab 頁面 **Details → AWS: Show** 取 access key / secret / session token
-- Region: us-east-1
-- Lab 啟動時帳號內只有一個空的 sample bucket
-- 本機 `pip install boto3`
+## 這個 Lab 在做什麼
 
-## 1. Placeholders
-| Placeholder | 說明 | 範例 |
-|---|---|---|
-| {{BUCKET}} | Lab 預建的 sample bucket（腳本動態取得，勿硬寫） | c215460a...-samplebucket-xzbadyiixxyg |
+用兩種方式（CloudShell、VS Code IDE）操作同一個 S3 bucket：上傳一個 Python 檔、再抓回來跑、最後上傳一個 `index.html`。
+**grader 只看 bucket 裡最後有沒有 `list-buckets.py` 和 `index.html` 這兩個檔案**，CloudShell / IDE 裡的探索動作不計分。
 
-## 2. Step-by-step（boto3）
+## 開始前
 
-一鍵：把憑證填進 [`lab2_1.py`](lab2_1.py) 後 `python lab2_1.py`。以下是它做的事。
+1. 按 **Start Lab**，等 `Lab status: ready`
+2. 按 **AWS** 開 Console（記得允許彈出視窗）
+3. 帳號裡只有一個預建的空 bucket，名字長得像 `c215460a...-samplebucket-xzbadyiixxyg`
 
-### Step 2.1 — 找出 sample bucket（= 作業的 `aws s3 ls`）
-**Command:** `s3.list_buckets()` → 挑名字去掉 hyphen 後含 `samplebucket` 的那個
-**Expected output:** `['c215460a5440389l16814605t1w6297422332-samplebucket-xzbadyiixxyg']`
-**If fails:** 找不到 → Lab 還沒 ready，等 1–2 分鐘再跑
+## Task 1：CloudShell
 
-### Step 2.2 — 上傳 list-buckets.py（Task 1：`aws s3 cp list-buckets.py s3://{{BUCKET}}`）
-**Command:** `s3.put_object(Bucket=BUCKET, Key='list-buckets.py', Body=<作業給的 6 行 boto3 程式>)`
+1. Console 右上角點 **CloudShell** 圖示（終端機符號），等 1–2 分鐘出現提示字元
+2. 確認 CLI 版本：
+   ```bash
+   aws --version
+   ```
+   看到 `aws-cli/2.x.x` 即可
+3. 列 bucket：
+   ```bash
+   aws s3 ls
+   ```
+   把那個含 `samplebucket` 的名字**複製到記事本**，後面要用很多次
+4. **Actions → Tabs layout → Split into columns** 開第二個終端（純體驗，不計分）
+5. 把作業提供的 `list-buckets.py` 下載到電腦，再 **Actions → Files → Upload file** 傳上 CloudShell
+   > 如果懶得下載，直接在 CloudShell 建檔也行：
+   > ```bash
+   > cat > list-buckets.py <<'EOF'
+   > import boto3
+   > session = boto3.Session()
+   > s3_client = session.client('s3')
+   > b = s3_client.list_buckets()
+   > for item in b['Buckets']:
+   >     print(item['Name'])
+   > EOF
+   > ```
+6. 跑一下確認：
+   ```bash
+   python3 list-buckets.py
+   ```
+   會印出同一個 bucket 名
+7. **上傳到 bucket（這一步計分）**：
+   ```bash
+   aws s3 cp list-buckets.py s3://<bucket-name>
+   ```
+   看到 `upload: ./list-buckets.py to s3://.../list-buckets.py`
 
-### Step 2.3 — 下載回來（Task 2：`aws s3 cp s3://{{BUCKET}}/list-buckets.py .`）
-**Command:** `s3.get_object(Bucket=BUCKET, Key='list-buckets.py')`
+## Task 2：VS Code IDE
 
-### Step 2.4 — 上傳 index.html（Task 2：`aws s3 cp index.html s3://{{BUCKET}}/index.html`）
-**Command:** `s3.put_object(Bucket=BUCKET, Key='index.html', Body='<body> Hello World. </body>\n', ContentType='text/html')`
-**Verify:** `list_objects_v2` 回傳 `['index.html', 'list-buckets.py']`
+1. 回到 Lab 說明頁，按 **Details → AWS: Show**，複製 **LabIDEURL** 和 **LabIDEPassword**
+2. 新分頁開 LabIDEURL，貼密碼 → Submit
+3. 下方 Bash 終端：
+   ```bash
+   aws s3 ls
+   aws s3 cp s3://<bucket-name>/list-buckets.py .
+   ```
+   左側檔案樹會出現 `list-buckets.py`
+4. 跑它：
+   ```bash
+   python3 list-buckets.py
+   ```
+   **會失敗** `ModuleNotFoundError: No module named 'boto3'`——這是作業預期的，接著裝：
+   ```bash
+   sudo pip3 install boto3
+   python3 list-buckets.py
+   ```
+   這次會印出 bucket 名
+5. 建 `index.html`：**☰ → File → New Text File**，內容貼
+   ```html
+   <body> Hello World. </body>
+   ```
+   **File → Save**，檔名 `index.html`，存在 `/home/ec2-user/environment/`
+   > 或直接在終端：`echo '<body> Hello World. </body>' > index.html`
+6. **上傳（這一步計分）**：
+   ```bash
+   aws s3 cp index.html s3://<bucket-name>/index.html
+   ```
 
-## 3. 驗收清單
-- [ ] `{{BUCKET}}` 內有 `list-buckets.py`
-- [ ] `{{BUCKET}}` 內有 `index.html`
-- [ ] Lab 頁 Submit → 100/100
+## 交作業
 
-## 4. Known grader traps
-- **bucket 名跟文件不同**：文件寫 `-sample-bucket-`，實際是 `-samplebucket-`（無中間 hyphen）→ 用去 hyphen 比對
-- **CloudShell / VS Code IDE 的 UI 探索步驟 grader 完全不看**：不需開 CloudShell、不需登 IDE、不需 `pip3 install boto3`；只看 S3 兩個物件
-- Appendix 的 `s3-permissions.py` 是給下一個 Lab 用的，本 Lab 不需執行
+回 Lab 說明頁按 **Submit → Yes**，1–2 分鐘後看 Grades；要看細項按 **Details → View Submission Report**。
 
-## 5. Recommended model
-- 複刻：Haiku 4.5（一條指令跑完）
+## 會踩的坑
+
+- 作業文字寫 bucket 名含 `-sample-bucket-`，實際是 `-samplebucket-`（中間沒有連字號），照 `aws s3 ls` 印出來的為準
+- `aws s3 cp` 目的地寫 `s3://<bucket-name>` 結尾不要多打東西；檔名會自動沿用
+- IDE 第一次跑 Python 缺 boto3 是正常的，別在那裡卡住
+- Appendix 的 `s3-permissions.py` 是給 Lab 3.1 用的，這裡不用碰
+- 兩個檔案都在 bucket 裡才按 Submit；可以重複 Submit，以最後一次為準
