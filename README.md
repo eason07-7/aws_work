@@ -209,6 +209,22 @@ Lab 編號沿用 AWS Academy Cloud Developing 課程（Sofía / 咖啡店情境�
 
 ---
 
+### [Lab 5.1 — Working with Amazon DynamoDB](cloud_developing/lab5.1/)
+
+**分數** 100/100（全自動）  
+**重點技能**：
+- `create_table` + `wait_until_exists`；`put_item` 搭 `ConditionExpression='attribute_not_exists(...)'`
+- `batch_writer(overwrite_by_pkeys=...)` vs 無 overwrite 的 fail-fast 行為
+- `update_table` 新增 GSI（`special_GSI`）並輪詢到 ACTIVE，`scan(IndexName, FilterExpression=Not(Attr.contains))`
+
+**關鍵陷阱**：
+- grader 只看最終狀態（表 + 26 筆 + GSI ACTIVE），中間 Console 操作不計分
+- GSI 建立中不可再 `update_table`，重跑前確認 ACTIVE
+
+[👉 Lab 5.1 完整指南](cloud_developing/lab5.1/SUCCESS.md) · [一鍵腳本](cloud_developing/lab5.1/lab5_1.py)
+
+---
+
 ## 使用方式
 
 ### 方式 A：按照 SUCCESS.md 逐步執行（推薦複刻）
@@ -279,15 +295,21 @@ aws_module_guides/
         ├── lab3.1.md           # 原始作業需求
         └── experiment/
             └── JOURNAL.md
+    └── lab5.1/
+        ├── SUCCESS.md          # ⭐ 開始這裡（全自動，100/100）
+        ├── lab5_1.py           # 一鍵腳本（自動下載 code.zip）
+        ├── lab5.1.md           # 原始作業需求
+        └── experiment/
+            └── JOURNAL.md
 ```
 
 ---
 
 ## 聲明
 
-- **成功紀錄**：Module 4（45/45）；Module 7（55/60，Task 2c grader 結構性陷阱）；Module 8（滿分，全自動）；Module 9（30/30，Task 4 手動 KDG）；Module 9_1（滿分，全自動 paramiko SSH）；Module 11（滿分，全自動，Cognito browser OAuth 模擬）；Module 12（滿分，全自動，Step Functions 增量建構）；Cloud Developing Lab 2.1 / 3.1（皆 100/100，全自動）
+- **成功紀錄**：Module 4（45/45）；Module 7（55/60，Task 2c grader 結構性陷阱）；Module 8（滿分，全自動）；Module 9（30/30，Task 4 手動 KDG）；Module 9_1（滿分，全自動 paramiko SSH）；Module 11（滿分，全自動，Cognito browser OAuth 模擬）；Module 12（滿分，全自動，Step Functions 增量建構）；Cloud Developing Lab 2.1 / 3.1 / 5.1（皆 100/100，全自動）
 - 此倉庫屬於 [AWS Homework Workspace](https://github.com/eason07-7/aws_autowork)自動腳本跑雲上實作的獨立模組指南子倉庫
 
 ---
 
-**最後更新**：2026-09-14（新增課程二 Cloud Developing — Lab 2.1 / 3.1，皆 100/100）
+**最後更新**：2026-09-14（新增課程二 Cloud Developing — Lab 2.1 / 3.1 / 5.1，皆 100/100）
