@@ -31,6 +31,7 @@
 | 8.1 | Migrating a Web Application to Docker Containers（Dockerfile、MySQL 容器、ECR） | 100/100 | [cloud_developing/lab8.1/SUCCESS.md](cloud_developing/lab8.1/SUCCESS.md) |
 | 8.2 | Running Containers on a Managed Service（Aurora Serverless、Elastic Beanstalk、API proxy） | 100/100 | [cloud_developing/lab8.2/SUCCESS.md](cloud_developing/lab8.2/SUCCESS.md) |
 | 9.1 | Caching Application Data with ElastiCache（Memcached、lazy loading / write-through） | 100/100 | [cloud_developing/lab9.1/SUCCESS.md](cloud_developing/lab9.1/SUCCESS.md) |
+| 9.2 | Implementing CloudFront for Caching and Application Security（CloudFront、WAF、CloudFront Functions） | 100/100 | [cloud_developing/lab9.2/SUCCESS.md](cloud_developing/lab9.2/SUCCESS.md) |
 
 每個 Lab 資料夾另附原始作業說明（`labX.Y.md`）與首刷實驗紀錄（`experiment/JOURNAL.md`）。
 
