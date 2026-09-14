@@ -29,6 +29,7 @@
 | 6.1 | Developing REST APIs with Amazon API Gateway（mock endpoints + deploy） | 100/100 | [cloud_developing/lab6.1/SUCCESS.md](cloud_developing/lab6.1/SUCCESS.md) |
 | 7.1 | Creating Lambda Functions Using the AWS SDK for Python（Lambda 整合 + CORS） | 100/100 | [cloud_developing/lab7.1/SUCCESS.md](cloud_developing/lab7.1/SUCCESS.md) |
 | 8.1 | Migrating a Web Application to Docker Containers（Dockerfile、MySQL 容器、ECR） | 100/100 | [cloud_developing/lab8.1/SUCCESS.md](cloud_developing/lab8.1/SUCCESS.md) |
+| 8.2 | Running Containers on a Managed Service（Aurora Serverless、Elastic Beanstalk、API proxy） | 100/100 | [cloud_developing/lab8.2/SUCCESS.md](cloud_developing/lab8.2/SUCCESS.md) |
 
 每個 Lab 資料夾另附原始作業說明（`labX.Y.md`）與首刷實驗紀錄（`experiment/JOURNAL.md`）。
 
