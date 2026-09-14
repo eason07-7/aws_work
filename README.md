@@ -192,6 +192,23 @@ Lab 編號沿用 AWS Academy Cloud Developing 課程（Sofía / 咖啡店情境�
 
 ---
 
+### [Lab 3.1 — Working with Amazon S3](cloud_developing/lab3.1/)
+
+**分數** 100/100（全自動）  
+**重點技能**：
+- `create_bucket` + `put_public_access_block`（三勾一不勾，留 policy 通道）
+- IP 白名單 bucket policy（`aws:SourceIp /32`）+ `s3:authtype` Deny 條款
+- 遞迴上傳靜態網站並設 `Cache-Control: max-age=0`
+
+**關鍵陷阱**：
+- `BlockPublicPolicy` 必須 False 否則 `put_bucket_policy` AccessDenied
+- IP 要用瀏覽機器的公網 IPv4（NAT / IPv6 會 403）
+- `upload_file` 要自己給 ContentType，不然瀏覽器會下載 index.html 而非顯示
+
+[👉 Lab 3.1 完整指南](cloud_developing/lab3.1/SUCCESS.md) · [一鍵腳本](cloud_developing/lab3.1/lab3_1.py)
+
+---
+
 ## 使用方式
 
 ### 方式 A：按照 SUCCESS.md 逐步執行（推薦複刻）
@@ -256,15 +273,21 @@ aws_module_guides/
         ├── lab2.1.md           # 原始作業需求
         └── experiment/
             └── JOURNAL.md
+    └── lab3.1/
+        ├── SUCCESS.md          # ⭐ 開始這裡（全自動，100/100）
+        ├── lab3_1.py           # 一鍵腳本（自動下載 code.zip）
+        ├── lab3.1.md           # 原始作業需求
+        └── experiment/
+            └── JOURNAL.md
 ```
 
 ---
 
 ## 聲明
 
-- **成功紀錄**：Module 4（45/45）；Module 7（55/60，Task 2c grader 結構性陷阱）；Module 8（滿分，全自動）；Module 9（30/30，Task 4 手動 KDG）；Module 9_1（滿分，全自動 paramiko SSH）；Module 11（滿分，全自動，Cognito browser OAuth 模擬）；Module 12（滿分，全自動，Step Functions 增量建構）；Cloud Developing Lab 2.1（100/100，全自動）
+- **成功紀錄**：Module 4（45/45）；Module 7（55/60，Task 2c grader 結構性陷阱）；Module 8（滿分，全自動）；Module 9（30/30，Task 4 手動 KDG）；Module 9_1（滿分，全自動 paramiko SSH）；Module 11（滿分，全自動，Cognito browser OAuth 模擬）；Module 12（滿分，全自動，Step Functions 增量建構）；Cloud Developing Lab 2.1 / 3.1（皆 100/100，全自動）
 - 此倉庫屬於 [AWS Homework Workspace](https://github.com/eason07-7/aws_autowork)自動腳本跑雲上實作的獨立模組指南子倉庫
 
 ---
 
-**最後更新**：2026-09-14（新增課程二 Cloud Developing — Lab 2.1，100/100）
+**最後更新**：2026-09-14（新增課程二 Cloud Developing — Lab 2.1 / 3.1，皆 100/100）
