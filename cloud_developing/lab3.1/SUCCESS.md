@@ -14,7 +14,7 @@
 | {{STUDENT_ID}} | 此次執行的學號 | 112021134 |
 | {{INITIALS}} | 姓名縮寫小寫（腳本頂端 `INITIALS`） | el |
 | {{BUCKET}} | `{{INITIALS}}-<YYYY-MM-DD>-s3site`（腳本自動組） | el-2026-09-14-s3site |
-| {{IP}} | 放行的公網 IPv4 | 203.222.22.102 |
+| {{IP}} | 放行的公網 IPv4 | 203.0.113.25 |
 
 ## 2. Step-by-step（boto3）
 
