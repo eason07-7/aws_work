@@ -1,5 +1,8 @@
-## AWS Academy Data Engineering [154382] 
+## 課程一：AWS Academy Data Engineering [154382]
 EE300016 [A] 大數據資料處理(大三)
+
+## 課程二：AWS Academy Cloud Developing [173563]
+雲端伺服器課程 — 見下方 [Cloud Developing Labs](#cloud-developing-labs)
 ## LINE 聯絡
 
 有興趣進一步交流，歡迎掃描下方 QR Code 加我 LINE：
@@ -29,7 +32,7 @@ EE300016 [A] 大數據資料處理(大三)
 | `*.cf.yml` | CloudFormation 模板 |
 | `experiment/` | 首刷流水帳與 workflow 狀態（僅供參考） |
 
-## Module 列表
+## Module 列表（課程一：Data Engineering）
 
 ### [Module 4 — Querying Data by Using Athena](module4/)
 
@@ -170,6 +173,25 @@ EE300016 [A] 大數據資料處理(大三)
 
 ---
 
+## Cloud Developing Labs（課程二）
+
+Lab 編號沿用 AWS Academy Cloud Developing 課程（Sofía / 咖啡店情境）。
+
+### [Lab 2.1 — Exploring AWS CloudShell and IDE](cloud_developing/lab2.1/)
+
+**分數** 100/100（全自動）  
+**重點技能**：
+- 用 boto3 取代 CloudShell / VS Code IDE 裡的 `aws s3 ls` / `aws s3 cp`
+- S3 `put_object` / `get_object` 往返 sample bucket
+
+**關鍵陷阱**：
+- 文件寫 `-sample-bucket-`，實際 bucket 名是 `-samplebucket-`（無中間 hyphen）
+- CloudShell / IDE 的 UI 步驟 grader 不計分，只看 bucket 內 `list-buckets.py` + `index.html`
+
+[👉 Lab 2.1 完整指南](cloud_developing/lab2.1/SUCCESS.md) · [一鍵腳本](cloud_developing/lab2.1/lab2_1.py)
+
+---
+
 ## 使用方式
 
 ### 方式 A：按照 SUCCESS.md 逐步執行（推薦複刻）
@@ -227,15 +249,22 @@ aws_module_guides/
 ├── module12/
 │   ├── SUCCESS.md              # ⭐ 開始這裡（全自動，Step Functions 增量建構，滿分）
 │   └── module12.md             # 原始作業需求
+└── cloud_developing/           # 課程二：Cloud Developing
+    └── lab2.1/
+        ├── SUCCESS.md          # ⭐ 開始這裡（全自動，100/100）
+        ├── lab2_1.py           # 一鍵腳本（填憑證即跑）
+        ├── lab2.1.md           # 原始作業需求
+        └── experiment/
+            └── JOURNAL.md
 ```
 
 ---
 
 ## 聲明
 
-- **成功紀錄**：Module 4（45/45）；Module 7（55/60，Task 2c grader 結構性陷阱）；Module 8（滿分，全自動）；Module 9（30/30，Task 4 手動 KDG）；Module 9_1（滿分，全自動 paramiko SSH）；Module 11（滿分，全自動，Cognito browser OAuth 模擬）；Module 12（滿分，全自動，Step Functions 增量建構）
+- **成功紀錄**：Module 4（45/45）；Module 7（55/60，Task 2c grader 結構性陷阱）；Module 8（滿分，全自動）；Module 9（30/30，Task 4 手動 KDG）；Module 9_1（滿分，全自動 paramiko SSH）；Module 11（滿分，全自動，Cognito browser OAuth 模擬）；Module 12（滿分，全自動，Step Functions 增量建構）；Cloud Developing Lab 2.1（100/100，全自動）
 - 此倉庫屬於 [AWS Homework Workspace](https://github.com/eason07-7/aws_autowork)自動腳本跑雲上實作的獨立模組指南子倉庫
 
 ---
 
-**最後更新**：2026-05-14（Module 11 / 12 新增，均滿分）
+**最後更新**：2026-09-14（新增課程二 Cloud Developing — Lab 2.1，100/100）
