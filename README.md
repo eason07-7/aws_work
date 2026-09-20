@@ -1,21 +1,6 @@
 # AWS Academy Cloud Developing — Lab 完整指南
 
 課程：AWS Academy Cloud Developing [173563]（Sofía 與咖啡店情境系列）。
-每篇指南都是實際做完、Submit 拿到 100/100 之後，照「人坐在 VS Code IDE / Console 前該怎麼做」的順序寫的，並標出會踩的坑。
-
-## LINE 聯絡
-
-有興趣進一步交流，歡迎掃描下方 QR Code 加我 LINE：
-
-<p align="left">
-	<a href="https://line.me/ti/p/mJUnfzW_Pr" target="_blank" rel="noopener noreferrer">
-		<img src="assets/line-qr.jpg" alt="LINE QR Code" width="220" />
-	</a>
-</p>
-
-<p>
-	<a href="https://line.me/ti/p/mJUnfzW_Pr" target="_blank" rel="noopener noreferrer">點我直接加 LINE 好友</a>
-</p>
 
 ---
 
