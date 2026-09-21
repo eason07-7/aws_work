@@ -152,12 +152,12 @@ IAM → Policies 搜 `aws-elasticbeanstalk-ec2-instance-policy` 看 JSON（ecr:G
        {"Namespace": "aws:elasticbeanstalk:application:environment", "OptionName": "APP_DB_HOST", "Value": "<FMI_5>"}
    ]
    ```
-2. 查 Docker 平台名稱，選 **Amazon Linux 2** 那個：
+2. 查 Docker 平台名稱，**用查到的那個**（現在只會有 Amazon Linux 2023 一項，AL2 已被 AWS 下架）：
    ```bash
    aws elasticbeanstalk list-available-solution-stacks | grep 'running Docker'
-   aws elasticbeanstalk create-environment --application-name MyNodeApp --environment-name MyEnv --solution-stack-name "64bit Amazon Linux 2 v4.0.5 running Docker" --region us-east-1 --option-settings file://options.txt
+   aws elasticbeanstalk create-environment --application-name MyNodeApp --environment-name MyEnv --solution-stack-name "64bit Amazon Linux 2023 v4.13.8 running Docker" --region us-east-1 --option-settings file://options.txt
    ```
-   （版本號照你查到的）。卡在 `:` 按 `q`
+   （名稱與版本號照你查到的原樣複製）。卡在 `:` 按 `q`
 3. 停掉 IDE 上的測試容器：
    ```bash
    docker stop node-web-app-1 && docker rm node-web-app-1
@@ -197,7 +197,7 @@ IAM → Policies 搜 `aws-elasticbeanstalk-ec2-instance-policy` 看 JSON（ecr:G
 - RDS Data API 忘記勾 → Query Editor 連不上
 - SG 少了 3306 self-reference → 容器和 EB 都連不到 DB
 - Task 5 網站看到錯誤是正常的，Task 6 做完才會好
-- `create-environment` 的 solution stack 要用 **Amazon Linux 2** 的；AL2023 那個對 Dockerrun v1 不相容
+- **`aws elasticbeanstalk list-available-solution-stacks | grep 'running Docker'` 現在只會列出 Amazon Linux 2023**（AWS 已於 2026 年 9 月下架 AL2 的 Docker 平台）。直接用它就好——實測 AL2023 一樣吃 `Dockerrun.aws.json v1`，後面的 Upload and deploy 與 `/beans.json` 都正常。作業截圖裡的 `64bit Amazon Linux 2 v4.0.5 running Docker` 已經找不到了，不用找
 - Upload and deploy 時 Version label 一定要改（預設名字重複會失敗）
 - `/bean_products` 忘記 Deploy API → 網站 Buy Coffee 還是 coming soon
 - IP 換了（換網路）→ 網站 403，重跑 setup.sh；`:8000` 打不開改 SG 8000 規則的 IP
