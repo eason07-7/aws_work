@@ -14,8 +14,8 @@ grader 看最終狀態：表存在（PK `product_name`）、26 筆資料、`spec
 
 ## Task 1：連上 IDE、準備檔案
 
-1. **Details → AWS: Show** → 複製 LabIDEURL / LabIDEPassword → 新分頁登入 IDE
-2. 終端：
+1. **Details → AWS: Show** → 複製 LabIDEURL / LabIDEPassword → 新分頁登入 IDE（頁面上找不到的話，見 [TROUBLESHOOTING A2](../../TROUBLESHOOTING.md#a2-找不到-vs-code-ide-的網址和密碼)）
+2. 在 **VS Code IDE 的終端**執行。⚠️ 不要在 lab 頁面右邊的 Vocareum terminal 跑，否則 AWS CLI 安裝包會塞進提交目錄，之後 Submit 會卡住（[TROUBLESHOOTING A1](../../TROUBLESHOOTING.md#a1-submit-一直失敗already-in-progress--504)）：
    ```bash
    wget https://aws-tc-largeobjects.s3.us-west-2.amazonaws.com/CUR-TF-200-ACCDEV-2-91558/03-lab-dynamo/code.zip -P /home/ec2-user/environment
    unzip code.zip
@@ -113,3 +113,5 @@ grader 看最終狀態：表存在（PK `product_name`）、26 筆資料、`spec
 - GSI 還在 Creating 時再跑一次 `add_gsi.py` 會報 `ResourceInUseException`，等就好
 - 表在 Lab 一開始不該存在；若 `create_table.py` 報 `ResourceInUseException` 代表已建過，直接往下做即可
 - Console 的 Explore table items 有時要按 **Run**/重新整理才會更新
+- 評分只看最終狀態：表 ACTIVE、**剛好 26 筆**、GSI ACTIVE。變成 28 筆通常是 Task 5 載入前沒清空，`best cake` / `best pie` 殘留
+- Submit 一直顯示 `Submit already in progress` / `Operation failed` → 多半是提交目錄被 AWS CLI 安裝包塞爆，清理方法見 [TROUBLESHOOTING A1](../../TROUBLESHOOTING.md#a1-submit-一直失敗already-in-progress--504)

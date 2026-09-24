@@ -26,6 +26,19 @@
 
 ---
 
+## 卡住了？
+
+**[TROUBLESHOOTING.md — 常見問題與排查紀錄](TROUBLESHOOTING.md)**
+
+整理了跟作業內容無關的平台問題、AWS 服務版本變動，以及各 lab 的評分陷阱，可以依錯誤訊息查找。例如：
+
+- Submit 一直顯示 `Submit already in progress` 或 `Operation failed`，交不出去
+- 找不到 VS Code IDE 的網址和密碼
+- Elastic Beanstalk 找不到 Amazon Linux 2 的 Docker 平台
+- Lab 5.1 DynamoDB 都做完了，分數卻是 0
+
+---
+
 過往課程（AWS Academy Data Engineering）已封存於 [archive/data_engineering/](archive/data_engineering/README.md)。
 
-**最後更新**：2026-09-14
+**最後更新**：2026-09-25
