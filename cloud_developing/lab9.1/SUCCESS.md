@@ -109,7 +109,14 @@ python3 find_all.py
 
 ## 交作業
 
-**Submit → Yes**。
+**先做這個檢查，再 Submit**（約 10 秒）。在 CloudShell 執行：
+
+```bash
+aws elasticbeanstalk describe-environments --environment-names MyEnv --query 'Environments[].[Status,CNAME]' --output table
+```
+
+- 只看到 **1 列、狀態 `Ready`** → 直接 **Submit → Yes**
+- 看到 **`Terminated`** 的 `MyEnv` → 那是帳號上一位使用者留下的舊紀錄，**約 1 小時後會自動消失**。現在交，評分最後一步（Task 8B）可能崩潰。原因與判斷依據見 [TROUBLESHOOTING C8](../../TROUBLESHOOTING.md#c8-lab-91評分最後一步崩潰task-8b-沒分name-or-service-not-known)
 
 ## 會踩的坑
 
@@ -119,4 +126,7 @@ python3 find_all.py
 - `update_item.py` 印的是 `Cache purged.`，跟作業截圖的 `Purged the cache` 不同，正常
 - Task 8 忘記 `mv bean.controller_2.js` 就 build → 網站不會有 cache 那行字，也不吃 `MEMC_HOST`
 - EB 環境變數 Apply 後要等狀態回 Ok 再測；`/beans` 第一次一定是 Db
+- **剛貼完 `setup.sh` 就去改 EB 環境變數會被拒**：`setup.sh` 自己會觸發一次 EB 更新，等 EB 狀態回到 Ok/Ready 再改
+- 同一支腳本跑太快重跑：`find_all` 的快取 TTL 是 300 秒，第一次可能直接命中快取。等 5 分鐘再重跑第一次的 `find_all.py`
+- `create_item.py` 每跑一次就多插一筆；多跑了會有兩筆 `Worlds greatest bean`，驗收是「多一筆」，多的那筆要刪掉
 - 換過網路 → 網站 403，重跑 setup.sh 填新 IP

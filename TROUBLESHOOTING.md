@@ -30,6 +30,7 @@ AWS Academy Cloud Developing 的 lab 跑在 Vocareum（Learner Lab）上。有�
 | Lab 8.2：`Unable to connect to the coffee database` | [C5](#c5-lab-82評分說-unable-to-connect-to-the-coffee-database) |
 | Lab 9.2：建 WAF 時出現 `WAFUnavailableEntityException` | [C6](#c6-lab-92建-waf-時說-entity-不可用) |
 | Lab 11.1：`An SNS Publish action using the EmailReport topic was not found` | [C7](#c7-lab-111評分說找不到-sns-publish) |
+| Lab 9.1：評分到最後一步崩潰，Task 8B 沒分，`Name or service not known` | [C8](#c8-lab-91評分最後一步崩潰task-8b-沒分name-or-service-not-known) |
 
 ---
 
@@ -161,6 +162,48 @@ SecretsErrorException ... The secret arn:aws:secretsmanager:...:secret:rds-db-cr
 
 ---
 
+### A7. Submit 立刻失敗：`cp: cannot stat .../.aws/credentials` + `except HTTPError, URLError:` SyntaxError
+
+**症狀**（Lab 8.2，2026-10-27）：按 Submit 後幾秒就結束，輸出：
+
+```
+cp: cannot stat '/mnt/vocwork2/grader/.../work/.aws/credentials': No such file or directory
+Traceback (most recent call last):
+  File "/mnt/ro/voccontent2/gradinglib/eee_C_XXXXXXX/.../grade.py", line 14, in
+    from commands.linux import LinuxRequests
+  File ".../lib/grading_common/commands/linux.py", line 25
+    except HTTPError, URLError:
+SyntaxError: invalid syntax
+Back in submit.sh...
+end
+```
+
+**性質**：這是**平台（Vocareum / 課程評分庫）端的問題，學生端無法修正**。
+
+**為什麼**：
+
+- `except HTTPError, URLError:` 是 **Python 2 專屬語法**；`grade.py` 第 14 行**無條件 import**，所以在 import 階段就 `SyntaxError`，早於任何作業檢查
+- 該檔在 `/mnt/ro/voccontent2/...`（**唯讀的課程評分庫**），學生改不了
+- 合理推測：評分 runtime 已升為 Python 3，但課程的 `gradinglib` 仍是 Python 2
+
+**與 `cp ... .aws/credentials` 的關係**：那是另一件事（Vocareum 家目錄只有 `config` 沒有 `credentials`，目錄還是 555），但**即使補上，第 14 行的 SyntaxError 照樣讓 grade.py 立刻結束**。不要在這上面浪費時間。
+
+**先排除的三件事**（都做過）：
+
+1. `du -sh ~` = 36K、5 個檔案 → **不是** A1 那種打包逾時
+2. Chrome / Edge 都試過，錯誤逐字相同 → 不是瀏覽器
+3. AWS 端 33 項驗收全過 → 不是作業沒做完
+
+**解法**：帶證據報助教／講師，請平台方確認評分庫版本或改人工評分。證據清單：
+
+- 上述錯誤原文（含 `grade.py` 行號與 `linux.py` 第 25 行）
+- `ls -la ~/.aws`（只有 config、目錄 555）
+- `du -sh ~`（36K，排除檔案太大）
+- AWS 端資源截圖與驗收表
+- 補充：**同一份作業 2026-09-14 可正常評分滿分**，2026-10-27 起每次都卡在同一行 → 屬平台改版造成的回歸
+
+---
+
 ## B. AWS 服務版本變動
 
 ### B1. Elastic Beanstalk 找不到 Amazon Linux 2 的 Docker 平台
@@ -254,6 +297,43 @@ An SNS Publish action using the EmailReport topic was not found
 
 ---
 
+### C8. Lab 9.1：評分最後一步崩潰，Task 8B 沒分（`Name or service not known`）
+
+**症狀**：Grades 顯示 `Total score 35/40`，其他項都 5/5，只有 `[TASK 8B] Updated Docker application` 是 `-/5`。Submit 的輸出前面幾項都是 `Testing report - ... configured correctly`，最後崩潰：
+
+```
+File ".../grade.py", line 245, in main
+    html = urllib.request.urlopen(request_url, context=ctx).read()
+...
+socket.gaierror: [Errno -2] Name or service not known
+urllib.error.URLError: <urlopen error [Errno -2] Name or service not known>
+```
+
+**怎麼查出來的**
+
+1. 前面的檢查都過，代表 AWS 端的作業是對的；崩潰點是評分程式要**抓一個網頁**，而那個**主機名稱解析失敗**。所以重點是：評分程式抓的是哪個名稱？
+2. 盤點帳號裡所有會被當成網址的名稱，逐一測試能不能解析。結果：**有兩個叫 `MyEnv` 的 EB 環境，其中一個是 `Terminated`，它的網址解析不了**。
+3. 用評分程式最可能的幾種呼叫方式列環境清單（什麼參數都不給、只給名稱、只給應用程式名稱），**三種都會回傳那個已終止的環境**；只有加了 `IncludeDeleted=False` 才看不到它。
+4. 那個舊環境的終止時間是在你這次 lab 啟動**之前**（是帳號上一位使用者留下、平台回收時終止的）。EB 會把已終止環境的紀錄保留**約 1 小時**才從清單消失，實測約 60 分鐘。
+
+**根因（有信心的部分與推論的部分）**
+
+- **確證**：舊的已終止環境在預設清單裡、它的網址解析不了、約 1 小時後它從清單消失
+- **確證**：它消失後，**沒有改動任何 AWS 資源**，重新 Submit 就拿到 `40/40`
+- **推論**：評分程式實際取到了舊環境的網址。我們看不到評分程式的 `request_url`，所以這一步沒辦法 100% 證明，但上面幾點使它非常可能
+
+**解法**：不用改任何東西，**等舊紀錄消失再重新 Submit**。在 CloudShell 確認：
+
+```bash
+aws elasticbeanstalk describe-environments --environment-names MyEnv --query 'Environments[].[Status,CNAME]' --output table
+```
+
+只剩 1 列、狀態 `Ready` 就可以交。已經拿到的分數不會因為重交而消失。
+
+**預防**：lab 啟動後**一個小時內**交最容易撞到這個，交之前先跑上面那行檢查。其他會去抓 EB 網址的 lab（例如 8.2、10.1）理論上也可能遇到，我們沒有實測。
+
+---
+
 ## D. 通用排查方法
 
 1. **看實際的網路請求，不要只看錯誤提示。** 前端顯示的「Operation failed」看不出原因，Network 面板裡的**狀態碼**和**等待時間**才看得出來：
@@ -264,3 +344,4 @@ An SNS Publish action using the EmailReport topic was not found
 4. **用 Grades 面板看評分項目。** 它會列出評分實際檢查哪幾項（例如 Lab 5.1 只檢查 Task 2、5、7），可以用來判斷問題出在資料還是平台。
 5. **找對照組。** 同學交得出去、你交不出去，就代表平台正常，問題在你的環境或帳號狀態，可以縮小範圍。
 6. **不確定是不是自己的錯時，先查 AWS 端的真實狀態。** 例如直接用 Console 看表裡有幾筆資料、GSI 狀態是什麼，再決定下一步。
+7. **評分程式看資源的方式，不一定跟你一樣。** 你自己查「有哪些環境／資源」時，習慣會過濾掉已刪除的；評分程式不一定這樣做。遇到評分在最後一步崩潰、前面都通過時，用**不加任何過濾**的方式列一次資源，看看有沒有殘留的已終止資源（見 [C8](#c8-lab-91評分最後一步崩潰task-8b-沒分name-or-service-not-known)）。
